@@ -1,0 +1,26 @@
+<h1>Listing name_composites</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Author</th>
+    <th>Year</th>
+  </tr>
+
+<% for name_composite in @name_composites %>
+  <%- if name_composite.is_confirmed -%>
+  <tr>
+    <td><%=h name_composite.name_string.name %></td>
+    <td><%=h name_composite.name_author.author_string %></td>
+    <td><%=h name_composite.name_year.name_year %></td>
+    <td><%= link_to 'Show', name_composite %></td>
+    <td><%= link_to 'Edit', edit_name_composite_path(name_composite) %></td>
+    <td><%= link_to 'Destroy', name_composite, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+  <%- end -%>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New name_composite', new_name_composite_path %>

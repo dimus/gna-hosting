@@ -1,0 +1,23 @@
+<p>
+  <b>Name string:</b>
+  <%=h @name_composite.name_string %>
+</p>
+
+<p>
+  <b>Name author:</b>
+  <%=h @name_composite.name_author %>
+</p>
+
+<p>
+  <b>Name year:</b>
+  <%=h @name_composite.name_year %>
+</p>
+
+<p>
+  <b>Is confirmed:</b>
+  <%=h @name_composite.is_confirmed %>
+</p>
+
+
+<%= link_to 'Edit', edit_name_composite_path(@name_composite) %> |
+<%= link_to 'Back', name_composites_path %>

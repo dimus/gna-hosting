@@ -1,0 +1,20 @@
+<h1>Editing name_author</h1>
+
+<% form_for(@name_author) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :author_string %><br />
+    <%= f.text_field :author_string %>
+  </p>
+  <p>
+    <%= f.label :is_confirmed %><br />
+    <%= f.check_box :is_confirmed %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @name_author %> |
+<%= link_to 'Back', name_authors_path %>

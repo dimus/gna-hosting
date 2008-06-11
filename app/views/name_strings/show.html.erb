@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @name_string.name %>
+</p>
+
+<p>
+  <b>Is canonical:</b>
+  <%=h @name_string.is_canonical %>
+</p>
+
+<p>
+  <b>Canonical:</b>
+  <%=h @name_string.canonical_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_name_string_path(@name_string) %> |
+<%= link_to 'Back', name_strings_path %>

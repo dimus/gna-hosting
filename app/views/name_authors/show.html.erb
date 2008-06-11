@@ -1,0 +1,13 @@
+<p>
+  <b>Author string:</b>
+  <%=h @name_author.author_string %>
+</p>
+
+<p>
+  <b>Is confirmed:</b>
+  <%=h @name_author.is_confirmed %>
+</p>
+
+
+<%= link_to 'Edit', edit_name_author_path(@name_author) %> |
+<%= link_to 'Back', name_authors_path %>

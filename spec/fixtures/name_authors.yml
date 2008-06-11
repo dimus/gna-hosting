@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  author_string: MyString
+  is_confirmed: false
+
+two:
+  author_string: MyString
+  is_confirmed: false

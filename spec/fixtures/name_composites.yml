@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name_string: 
+  name_author: 
+  name_year: 
+  is_confirmed: false
+
+two:
+  name_string: 
+  name_author: 
+  name_year: 
+  is_confirmed: false
