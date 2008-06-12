@@ -17,7 +17,7 @@ describe "/name_years/index.html.erb" do
   it "should render list of name_years" do
     render "/name_years/index.html.erb"
     response.should have_tag("tr>td", "1", 2)
-    response.should have_tag("tr>td", false, 2)
+    response.should have_tag("tr>td", "false", 2)
   end
 end
 

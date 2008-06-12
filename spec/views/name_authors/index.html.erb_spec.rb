@@ -17,7 +17,7 @@ describe "/name_authors/index.html.erb" do
   it "should render list of name_authors" do
     render "/name_authors/index.html.erb"
     response.should have_tag("tr>td", "MyString", 2)
-    response.should have_tag("tr>td", false, 2)
+    response.should have_tag("tr>td", "false", 2)
   end
 end
 

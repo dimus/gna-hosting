@@ -4,7 +4,7 @@ class CreateNameComposites < ActiveRecord::Migration
       t.references :name_string
       t.references :name_author
       t.references :name_year
-      t.boolean :is_confirmed
+      t.boolean :is_confirmed #created from separate fields, not by parsing
 
       t.timestamps
     end

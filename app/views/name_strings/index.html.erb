@@ -10,7 +10,7 @@
 <% for name_string in @name_strings %>
   <tr>
     <td><%=h name_string.name %></td>
-    <td><%=h name_string.is_canonical %></td>
+    <td><%=h name_string.is_canonical ? "yes" : "no"  %></td>
     <td><%=h name_string.canonical_id %></td>
     <td><%= link_to 'Show', name_string %></td>
     <td><%= link_to 'Edit', edit_name_string_path(name_string) %></td>
