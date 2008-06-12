@@ -2,12 +2,12 @@
 
 one:
   name_string: 
-  name_author: 
+  name_author: linneus 
   name_year: 
   is_confirmed: false
 
 two:
   name_string: 
-  name_author: 
+  name_author: l
   name_year: 
   is_confirmed: false

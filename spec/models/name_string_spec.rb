@@ -1,6 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe NameString do
+  fixtures :name_string
+  
   before(:each) do
     @name_string = nil
     @creating_name_string = lambda do
