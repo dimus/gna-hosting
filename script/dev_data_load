@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'rubygems'
+require 'hpricot'
+
+OPTIONS = {
+  :environment => "production",
+}
+
+ARGV.options do |opts|
+  script_name = File.basename($0)
+  opts.banner = "Usage: ruby #{script_name} [options]"
+
+  opts.separator ""
+
+  opts.on("-e", "--environment=name", String,
+          "Specifies the environment to create the account under (test/development/production).",
+          "Default: production") { |OPTIONS[:environment]| }
+
+  opts.separator ""
+
+  opts.on("-h", "--help",
+          "Show this help message.") { puts opts; exit }
+
+  opts.parse!
+end
+
+ENV["RAILS_ENV"] = OPTIONS[:environment]
+require File.dirname(__FILE__) + "/../config/environment" 
+require 'name_author'
+require 'name_string'
+require 'name_year'
+
+def prepare_data
+  df = File.open(File.dirname(__FILE__) + "/../dev_data/dev_names.xml") 
+  get_data = false
+  record = ""
+  df.readlines.each do |l|
+    
+  
+    if l.strip == "<Query17>"
+      get_data = true
+    elsif l.strip == "</Query17>"
+      get_data = false
+      yield Hpricot(record)
+      record = ""
+    elsif get_data
+      record += l
+    end
+  end
+end
+
+
+prepare_data do |data|
+  author = (data/'author').inner_text
+  year = (data/'year').inner_text
+  name = (data/'name').inner_text
+  url = (data/'url').inner_text
+  ns = NameString.create(:name => name)
+  yr = NameYear.create(:name_year => year)
+  ath = NameAuthor.create(:author_string  => author)
+  cpn = NameComposite.create(:name_author => ath, :name_year => yr, :name_string => ns, :is_confirmed => true )
+end
