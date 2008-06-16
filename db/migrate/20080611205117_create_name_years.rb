@@ -1,7 +1,7 @@
 class CreateNameYears < ActiveRecord::Migration
   def self.up
     create_table :name_years do |t|
-      t.integer :name_year
+      t.string :name_year
 
       t.timestamps
     end

@@ -51,17 +51,32 @@ def prepare_data
   end
 end
 
-%w(name_composites name_years name_authors name_strings).each do |table|
-   ActiveRecord::Base.connection.execute("delete from #{table}")
-end
+c = ActiveRecord::Base.connection
 
+%w(name_composites name_years name_authors name_strings).each do |table|
+   c.execute("delete from #{table}")
+end
+count = 0
+tm = Time.new
 prepare_data do |data|
-  author = (data/'author').inner_text
-  year = (data/'year').inner_text
-  name = (data/'name').inner_text
-  url = (data/'url').inner_text
-  ns = NameString.find_by_name(name) || NameString.create(:name => name)  
-  yr = NameYear.find_by_name_year(year.to_i) || NameYear.create(:name_year => year)
-  ath = NameAuthor.find_by_author_string(author) || NameAuthor.create(:author_string  => author)
-  cpn = NameComposite.create(:name_author => ath, :name_year => yr, :name_string => ns)
+  count += 1
+  if count % 10000 == 0 
+    tm1 = Time.new
+    delta = tm1 - tm
+    tm = tm1
+    puts count.to_s + " " + delta.to_s + "s"
+  end
+  author = (data/'author').inner_text.strip
+  year = (data/'year').inner_text.strip 
+  name = (data/'name').inner_text.strip
+  url = (data/'url').inner_text.strip
+  
+  name_id = name == '' ? "null" : c.insert("insert into name_strings (name) values ('#{name}')") rescue  c.select_one("select id from name_strings where name = '#{name}'")['id']
+  year_id = year == '' ? "null" : c.insert("insert into name_years (name_year) values ('#{year}')") rescue c.select_one("select id from name_years where name_year = '#{year}'")['id']
+  author_id = author== '' ? "null" : c.insert("insert into name_authors (author_string) values ('#{author}')") rescue  c.select_one("select id from name_authors where author_string = '#{author}'")['id']
+  composite_id = c.insert("insert into name_composites (name_author_id, name_year_id, name_string_id) values (#{name_id}, #{year_id}, #{author_id})") rescue puts("duplicate: name-#{name_id}, year-#{year_id}, author-#{author_id}")
+#  ns = NameString.find_by_name(name) || NameString.create(:name => name)  
+#  yr = NameYear.find_by_name_year(year.to_i) || NameYear.create(:name_year => year)
+#  ath = NameAuthor.find_by_author_string(author) || NameAuthor.create(:author_string  => author)
+#  cpn = NameComposite.create(:name_author => ath, :name_year => yr, :name_string => ns)
 end
