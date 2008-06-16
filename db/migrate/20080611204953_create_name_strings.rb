@@ -7,6 +7,9 @@ class CreateNameStrings < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index(:name_strings, 'name', :unique => true, :name => 'idx_name_string_name')
+
   end
 
   def self.down

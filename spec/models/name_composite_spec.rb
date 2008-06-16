@@ -7,7 +7,6 @@ describe NameComposite do
   end
 
   it "should be valid" do
-    puts name_authors(:linneus).to_yaml
     @name_composite.should be_valid
   end
 end

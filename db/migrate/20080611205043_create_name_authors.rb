@@ -5,6 +5,8 @@ class CreateNameAuthors < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index(:name_authors, :author_string, :unique => true, :name => 'idx_name_authors1')
   end
 
   def self.down

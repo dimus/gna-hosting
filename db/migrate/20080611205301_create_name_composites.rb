@@ -8,6 +8,8 @@ class CreateNameComposites < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index(:name_composites,  [:name_string_id, :name_author_id, :name_year_id], :unique => true, :name => 'idx_name_composites1')
   end
 
   def self.down

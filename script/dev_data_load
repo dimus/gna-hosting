@@ -51,14 +51,17 @@ def prepare_data
   end
 end
 
+%w(name_composites name_years name_authors name_strings).each do |table|
+   ActiveRecord::Base.connection.execute("delete from #{table}")
+end
 
 prepare_data do |data|
   author = (data/'author').inner_text
   year = (data/'year').inner_text
   name = (data/'name').inner_text
   url = (data/'url').inner_text
-  ns = NameString.create(:name => name)
-  yr = NameYear.create(:name_year => year)
-  ath = NameAuthor.create(:author_string  => author)
-  cpn = NameComposite.create(:name_author => ath, :name_year => yr, :name_string => ns, :is_confirmed => true )
+  ns = NameString.find_by_name(name) || NameString.create(:name => name)  
+  yr = NameYear.find_by_name_year(year.to_i) || NameYear.create(:name_year => year)
+  ath = NameAuthor.find_by_author_string(author) || NameAuthor.create(:author_string  => author)
+  cpn = NameComposite.create(:name_author => ath, :name_year => yr, :name_string => ns)
 end

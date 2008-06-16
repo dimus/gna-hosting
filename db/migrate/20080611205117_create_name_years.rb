@@ -5,6 +5,8 @@ class CreateNameYears < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index(:name_years, :name_year, :unique => true, :name => 'idx_name_years1')
   end
 
   def self.down

@@ -7,6 +7,7 @@
 gna-ror.war
 config/database.yml
 db/schema.rb
+dev_data/*
 tmp/cache/*
 tmp/pids/*
 tmp/sessions/*
