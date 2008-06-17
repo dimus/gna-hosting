@@ -37,16 +37,24 @@ def prepare_data
   df = File.open(File.dirname(__FILE__) + "/../dev_data/dev_names.xml") 
   get_data = false
   record = ""
+  name = year = auth = url = ''
   df.readlines.each do |l|
-    
-  
-    if l.strip == "<Query17>"
+
+    stripped = l.strip
+
+    if stripped == "<Query17>"
       get_data = true
-    elsif l.strip == "</Query17>"
+    elsif stripped == "</Query17>"
       get_data = false
-      yield Hpricot(record)
+      #TMP yield Hpricot(record)
+      yield [name, auth, year, url]
       record = ""
     elsif get_data
+      (tag,val) = stripped.match(/<([^>]+)>([^<]+)/)[1..2]
+      name = val if tag.downcase == 'name'
+      year = val if tag.downcase == 'year'
+      auth = val if tag.downcase == 'author'
+      url  = val if tag.downcase == 'url'
       record += l
     end
   end
@@ -59,8 +67,13 @@ c = ActiveRecord::Base.connection
 end
 count = 0
 tm = Time.new
+name_ids = {}
+year_ids = {}
+author_ids = {}
 RubyProf.start
-prepare_data do |data|
+# SLOWER: (Hpricot(File.read(File.dirname(__FILE__) + "/../dev_data/dev_names.xml"))/"query17").each do |data|
+#TMP: prepare_data do |data|
+prepare_data do |name, author, year, url|
   count += 1
   if count % 10000 == 0 
     tm1 = Time.new
@@ -68,15 +81,15 @@ prepare_data do |data|
     tm = tm1
     puts count.to_s + " " + delta.to_s + "s"
   end
-  author = (data/'author').inner_text.strip
-  year = (data/'year').inner_text.strip 
-  name = (data/'name').inner_text.strip
-  url = (data/'url').inner_text.strip
-  
-  name_id = name == '' ? "null" : c.insert("insert into name_strings (name) values ('#{name}')") rescue  c.select_one("select id from name_strings where name = '#{name}'")['id']
-  year_id = year == '' ? "null" : c.insert("insert into name_years (name_year) values ('#{year}')") rescue c.select_one("select id from name_years where name_year = '#{year}'")['id']
-  author_id = author== '' ? "null" : c.insert("insert into name_authors (author_string) values ('#{author}')") rescue  c.select_one("select id from name_authors where author_string = '#{author}'")['id']
-  composite_id = c.insert("insert into name_composites (name_author_id, name_year_id, name_string_id) values (#{name_id}, #{year_id}, #{author_id})") rescue puts("duplicate: name-#{name_id}, year-#{year_id}, author-#{author_id}")
+  #TMP author = (data/'author').inner_text.strip
+  #TMP year = (data/'year').inner_text.strip 
+  #TMP name = (data/'name').inner_text.strip
+  #TMP url = (data/'url').inner_text.strip
+
+  name_ids[name] ||= name == '' ? "null" : c.insert("insert into name_strings (name) values ('#{name}')") rescue  c.select_one("select id from name_strings where name = '#{name}'")['id']
+  year_ids[year] ||= year == '' ? "null" : c.insert("insert into name_years (name_year) values ('#{year}')") rescue c.select_one("select id from name_years where name_year = '#{year}'")['id']
+  author_ids[author] ||= author== '' ? "null" : c.insert("insert into name_authors (author_string) values ('#{author}')") rescue  c.select_one("select id from name_authors where author_string = '#{author}'")['id']
+  composite_id = c.insert("insert into name_composites (name_author_id, name_year_id, name_string_id) values (#{name_ids[name]}, #{year_ids[year]}, #{author_ids[author]})") rescue puts("duplicate: name-#{name_ids[name]}, year-#{year_ids[year]}, author-#{author_ids[author]}")
 #  ns = NameString.find_by_name(name) || NameString.create(:name => name)  
 #  yr = NameYear.find_by_name_year(year.to_i) || NameYear.create(:name_year => year)
 #  ath = NameAuthor.find_by_author_string(author) || NameAuthor.create(:author_string  => author)
