@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'hpricot'
+require 'ruby-prof'
+require 'csv'
+
+def prepare_data
+  df = File.open(File.dirname(__FILE__) + "/../dev_data/dev_names.xml") 
+  get_data = false
+  record = ""
+  df.readlines.each do |l|
+    
+  
+    if l.strip == "<Query17>"
+      get_data = true
+    elsif l.strip == "</Query17>"
+      get_data = false
+      yield Hpricot(record)
+      record = ""
+    elsif get_data
+      record += l
+    end
+  end
+end
+
+csvf = File.open("../dev_data/dev_names.csv", "w")
+CSV::Writer.generate(csvf) do |csv|
+  prepare_data do |data|
+    author = (data/'author').inner_text.strip
+    year = (data/'year').inner_text.strip 
+    name = (data/'name').inner_text.strip
+    url = (data/'url').inner_text.strip
+    csv << [name,author,year,url]
+  end
+end
+csvf.close
